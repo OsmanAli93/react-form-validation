@@ -2,32 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.p-checker {
+  position: relative;
+  padding-left: 29px;
+  display: block;
+  cursor: pointer;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.p-checker input {
+  position: absolute;
+  height: 0;
+  width: 0;
+  cursor: pointer;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.p-checker:hover input ~ label::before {
+  border-color: #80bdff;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.p-checker label::before {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  border: 2px solid #2b2b2b;
+  height: 22px;
+  width: 22px;
+  top: 3px;
+  left: 0;
+  transition: all 0.25s ease-in-out;
+  cursor: pointer;
+}
+
+.p-checker label::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 12px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  left: 8px;
+  top: 7px;
+  transform: rotate(45deg);
+}
+
+.p-checker input:checked ~ label::before {
+  background-color: #1c6dbb;
+  border-color: #1c6dbb;
 }

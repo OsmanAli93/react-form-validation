@@ -1,113 +1,312 @@
-import Image from "next/image";
+"use client";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
-export default function Home() {
+const Home = () => {
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const [passwordValidator, setPasswordValidator] = useState({
+    isNumerical: false,
+    hasCapitalLetter: false,
+    hasSymbol: false,
+    greaterThanSixChar: false,
+  });
+
+  const onSubmit = (data) => {
+    alert(JSON.stringify(data));
+  };
+
+  const handleInput = (e) => {
+    const value = e.target.value;
+
+    setPasswordValidator({
+      isNumerical: /[0-9]/.test(value),
+      hasCapitalLetter: /[A-Z]/.test(value),
+      hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(value),
+      greaterThanSixChar: value.length > 6,
+    });
+
+    console.log({
+      isNumerical: /[0-9]/.test(value),
+      hasCapitalLetter: /[A-Z]/.test(value),
+      hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(value),
+      greaterThanSixChar: value.length > 6,
+    });
+  };
+
+  const calculatePasswordStrength = () => {
+    const { isNumerical, hasCapitalLetter, hasSymbol, greaterThanSixChar } =
+      passwordValidator;
+    const conditionsMet = [
+      isNumerical,
+      hasCapitalLetter,
+      hasSymbol,
+      greaterThanSixChar,
+    ].filter(Boolean).length;
+
+    if (conditionsMet === 4) return "Strong";
+    if (conditionsMet === 3) return "Medium";
+    return "Weak";
+  };
+
+  const passwordStrength = calculatePasswordStrength();
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <section className="py-[90px]">
+      <div className="max-w-md mx-auto">
+        <div className="text-center mb-6">
+          <h2 className="text-3xl mb-4 font-bold">Registration</h2>
+          <p>Register now to improve your cashflow.</p>
         </div>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-2">
+            <div className="flex flex-col">
+              <label className="text-sm py-2">Email</label>
+              <input
+                type="text"
+                {...register("email", {
+                  required: "The email field is required.",
+                })}
+                className={`order-2 border-2 rounded-md py-[6px] px-[12px]  ${
+                  errors.email ? " border-[#dc3545]" : "border-[#c0c0c0]"
+                }`}
+                placeholder="Email"
+              />
+            </div>
+
+            {errors.email && (
+              <p className="text-red-500 text-[10px] mt-1">
+                <strong> {errors.email.message} </strong>
+              </p>
+            )}
+          </div>
+          <div className="mb-2">
+            <div className="flex flex-col">
+              <label className="text-sm py-2">Full name (as per MyKad)</label>
+              <input
+                type="text"
+                {...register("name", {
+                  required: "The name field is required.",
+                })}
+                className={`border-2 rounded-md py-[6px] px-[12px] ${
+                  errors.name ? "border-[#dc3545]" : "border-[#c0c0c0]"
+                }`}
+                placeholder="Full Name"
+              />
+            </div>
+
+            {errors.name && (
+              <p className="text-red-500 text-[10px] mt-1">
+                <strong> {errors.name.message} </strong>
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col mb-2">
+            <label className="text-sm py-2">Company name (optional)</label>
+            <input
+              type="text"
+              className="border-2 rounded-md py-[6px] px-[12px] border-[#c0c0c0]"
+              placeholder="Company name"
+            />
+          </div>
+          <div className="flex flex-col mb-2">
+            <label className="text-sm py-2">Phone no.</label>
+            <div className="flex">
+              <select className="bg-white border-2 border-r-0 rounded-l-md  border-[#c0c0c0] py-[6px] px-[12px]">
+                <option>+06</option>
+              </select>
+              <input
+                type="text"
+                {...register("phone", {
+                  required: "The phone field is required.",
+                })}
+                className={`w-full border-2 rounded-r-md py-[6px] px-[12px] ${
+                  errors.phone ? "border-[#dc3445]" : "border-[#c0c0c0]"
+                }`}
+                placeholder="Phone no"
+              />
+            </div>
+
+            {errors.phone && (
+              <p className="text-red-500 text-[10px] mt-1">
+                <strong> {errors.phone.message} </strong>
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col mb-2">
+            <label className="text-sm py-2">Password</label>
+            <input
+              type="password"
+              {...register("password", {
+                required: "This password field is required.",
+                pattern:
+                  "(?=^.{6,}$)((?=.*d)(?=.*W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+              })}
+              className={`border-2 rounded-md py-[6px] px-[12px] ${
+                errors.password ? "border-[#dc3445]" : "border-[#c0c0c0]"
+              }`}
+              placeholder="Password"
+              onInput={(e) => handleInput(e)}
+            />
+
+            {errors.phone && (
+              <p className="text-red-500 text-[10px] mt-1">
+                <strong> {errors.phone.message} </strong>
+              </p>
+            )}
+
+            <div>
+              <p className="text-[13px] mt-3 mb-2">
+                Your password must contain
+              </p>
+              <div className="p-checker flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="digit"
+                  className="hidden"
+                  disabled
+                  checked={passwordValidator.isNumerical}
+                />
+                <label htmlFor="digit" className="text-[13px] cursor-pointer">
+                  Numerical digit
+                </label>
+              </div>
+              <div className="p-checker flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="capital"
+                  className="hidden"
+                  disabled
+                  checked={passwordValidator.hasCapitalLetter}
+                />
+                <label htmlFor="capital" className="text-[13px] cursor-pointer">
+                  Capital letter
+                </label>
+              </div>
+              <div className="p-checker flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="symbols"
+                  className="hidden"
+                  disabled
+                  checked={passwordValidator.hasSymbol}
+                />
+                <label htmlFor="symbols" className="text-[13px] cursor-pointer">
+                  Symbols
+                </label>
+              </div>
+              <div className="p-checker flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="character"
+                  className="hidden"
+                  disabled
+                  checked={passwordValidator.greaterThanSixChar}
+                />
+                <label
+                  htmlFor="character"
+                  className="text-[13px] cursor-pointer"
+                >
+                  Minimum 6 characters
+                </label>
+              </div>
+              <div className="mb-2 text-[13px]">
+                Password strength:{" "}
+                <span
+                  className={`text-bold ${
+                    passwordStrength === "Strong"
+                      ? "text-green-600"
+                      : passwordStrength === "Medium"
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {passwordStrength}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col mb-2">
+            <label className="text-sm py-2">Confirm password</label>
+            <input
+              type="password"
+              {...register("password_confirmation", {
+                validate: (value) =>
+                  value === watch("password") || "Password do not match",
+              })}
+              className={`border-2 rounded-md py-[6px] px-[12px] ${
+                errors.password_confirmation
+                  ? "border-[#dc3445]"
+                  : "border-[#c0c0c0]"
+              }`}
+              placeholder="Confirm password"
+            />
+
+            {errors.password_confirmation && (
+              <p className="text-red-500 text-[10px] mt-1">
+                <strong> {errors.password_confirmation.message} </strong>
+              </p>
+            )}
+          </div>
+
+          <div className="w-full h-[2px] my-6 bg-gray-200"></div>
+
+          <div className="p-checker flex items-center">
+            <input
+              type="checkbox"
+              {...register("agree", {
+                required: "Please check terms & conditions and privacy policy",
+              })}
+              id="tc_pp"
+              className="hidden"
+            />
+            <label
+              htmlFor="tc_pp"
+              className={`text-[13px] cursor-pointer ${
+                errors.agree && "text-red-500"
+              }`}
+            >
+              I agree with the terms & conditions and privacy policy, as stated
+              by Orpheus Capital
+            </label>
+          </div>
+
+          <div className="mb-6 my-2">
+            {errors.agree && (
+              <p className="text-red-500 text-[10px] mt-1">
+                <strong> {errors.agree.message} </strong>
+              </p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="w-6/12">
+              <a
+                href="#"
+                className="w-full block text-center text-[#616161] bg-[#efefef] py-[6px] px-[12px] rounded-[8px] text-md"
+              >
+                Back to login
+              </a>
+            </div>
+            <div className="w-6/12">
+              <button
+                type="submit"
+                className="w-full text-white bg-[#1c6dbb] py-[6px] px-[12px] rounded-[8px] text-md hover:text-black"
+              >
+                Create Account
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </section>
   );
-}
+};
+
+export default Home;
