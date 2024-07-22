@@ -28,7 +28,7 @@ const Home = () => {
       isNumerical: /[0-9]/.test(value),
       hasCapitalLetter: /[A-Z]/.test(value),
       hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(value),
-      greaterThanSixChar: value.length > 6,
+      greaterThanSixChar: value.length >= 6,
     });
 
     console.log({
